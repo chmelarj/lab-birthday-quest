@@ -3,52 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Website</title>
+    <title>Heroes of Might and Magic 3: The Quest</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Times+New+Roman&display=swap');
+
+        :root {
+            --h3-gold: #d4af37;
+            --h3-gold-dark: #aa8c2c;
+            --h3-green: #1e592d;
+            --h3-green-light: #3a8c4d;
+            --h3-blue: #1a2a4a;
+            --h3-text: #f0e6d2;
+            --h3-red: #8a1c1c;
         }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #0a0a0a;
+            background-image: 
+                radial-gradient(#1a1a1a 1px, transparent 1px),
+                radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: var(--h3-text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: linear-gradient(135deg, #2c1e10 0%, #1a120a 100%);
+            border: 8px double var(--h3-gold);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 
+                0 0 20px rgba(212, 175, 55, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        /* Decorative borders */
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: -12px; left: -12px; right: -12px; bottom: -12px;
+            border: 4px solid var(--h3-green);
+            border-radius: 15px;
+            z-index: -1;
+        }
+
         header {
             text-align: center;
-            padding: 20px 0;
-            background-color: #f4f4f4;
-            border-radius: 5px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--h3-gold);
+            padding-bottom: 20px;
         }
+
         h1 {
-            color: #333;
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--h3-gold);
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.8),
+                3px 3px 0 var(--h3-gold-dark);
+            letter-spacing: 2px;
         }
-        .content {
-            margin-top: 30px;
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--h3-gold-light);
+            margin-top: 5px;
+        }
+
+        .quest-container {
+            background: #2a1b0f;
+            border: 3px solid var(--h3-gold-dark);
+            padding: 25px;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+
+        .quest-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: linear-gradient(to bottom, #1e3a25 0%, #162b1b 100%);
+            border: 2px solid var(--h3-gold);
+            border-radius: 6px;
+            padding: 15px;
+            color: var(--h3-text);
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(to bottom, #2a5a3a 0%, #1e3a25 100%);
+            border-color: var(--h3-gold-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .option-btn:active {
+            transform: translateY(1px);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(to bottom, #2e4a35 0%, #1e3a25 100%);
+            box-shadow: 0 0 15px var(--h3-green-light);
+        }
+
+        .gold-counter {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3rem;
+            color: var(--h3-gold);
+        }
+
+        .gold-icon {
+            font-weight: bold;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            display: inline-block;
+            width: 200px;
+            height: 20px;
+            background: #0a0a0a;
+            border: 2px solid var(--h3-gold);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--h3-green), var(--h3-green-light));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .ending {
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed var(--h3-gold);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .ending h2 {
+            color: var(--h3-gold);
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .restart-btn {
+            background: linear-gradient(to bottom, #3a1a1a 0%, #2a1212 100%);
+            border: 2px solid var(--h3-red);
+            color: var(--h3-text);
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-family: 'Times New Roman', serif;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: linear-gradient(to bottom, #5a2a2a 0%, #3a1a1a 100%);
+            border-color: #a83a3a;
+            transform: scale(1.05);
+        }
+
+        /* Gold texture effect */
+        .gold-text {
+            background: linear-gradient(to bottom, #f0e6d2 0%, #d4af37 50%, #f0e6d2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* H3 style UI elements */
+        .ui-panel {
+            border: 2px solid #4a3b2a;
+            background: #1a120a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .game-container { padding: 15px; }
+            .option-btn { padding: 10px; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Website</h1>
-        <p>Hosted with GitHub Pages</p>
-    </header>
-    
-    <div class="content">
-        <h2>About This Page</h2>
-        <p>This is a simple HTML page hosted on GitHub Pages.</p>
-        
-        <h2>Features</h2>
-        <ul>
-            <li>Easy to deploy</li>
-            <li>Free hosting</li>
-            <li>Custom domain support</li>
-        </ul>
-        
-        <h2>Learn More</h2>
-        <p>Visit <a href="https://pages.github.com" target="_blank">GitHub Pages</a> for documentation.</p>
+    <div class="game-container">
+        <header>
+            <h1 class="gold-text">The Quest Begins</h1>
+            <p class="subtitle">Heroes of Might and Magic 3 - Adventure Edition</p>
+        </header>
+
+        <div class="gold-counter">
+            <span class="gold-icon">💰</span>
+            <span id="gold">0</span>
+        </div>
+
+        <div class="quest-container" id="quest-container">
+            <div class="quest-text" id="quest-text">
+                Welcome, adventurer! The kingdom is in danger, and the Archmage needs your help.
+                Will you begin your quest?
+            </div>
+
+            <div class="options" id="options">
+                <button class="option-btn" onclick="selectOption(0)">Yes, I accept the quest!</button>
+                <button class="option-btn" onclick="selectOption(1)">Tell me more first</button>
+                <button class="option-btn" onclick="selectOption(2)">I'm not ready yet</button>
+            </div>
+        </div>
+
+        <div class="ending" id="ending" style="display: none;">
+            <h2 class="gold-text">Quest Complete!</h2>
+            <p id="ending-text" style="font-size: 1.2rem; margin-bottom: 20px;">Your journey has ended.</p>
+            <p id="ending-gold" style="color: var(--h3-gold); font-size: 1.4rem; font-weight: bold;"></p>
+            <button class="restart-btn" onclick="restartQuest()">Start New Adventure</button>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-text" id="progress-text">0/3 Quests</div>
+            </div>
+        </div>
     </div>
-    
-    <footer style="margin-top: 50px; text-align: center; color: #666;">
-        <p>Created with ❤️ using GitHub Pages</p>
-    </footer>
+
+    <script>
+        // Game data - Heroes of Might and Magic 3 themed questions and answers
+        const gameData = [
+            {
+                question: "The Archmage needs your help! The kingdom is in danger. Will you begin your quest?",
+                options: [
+                    { text: "Yes, I accept the quest!", reward: 500, gold: 500, next: 1 },
+                    { text: "Tell me more about the danger first", reward: 100, gold: 100, next: 2 },
+                    { text: "I'm not ready yet", reward: 0, gold: 0, next: 3 }
+                ]
+            },
+            {
+                question: "Great choice! You've arrived at the first town. The merchant offers you a special deal on troops. What do you do?",
+                options: [
+                    { text: "Buy the troops! Strength is key.", reward: 800, gold: 300, next: 4 },
+                    { text: "Negotiate for a better price", reward: 600, gold: 500, next: 4 },
+                    { text: "Move on to the next town", reward: 200, gold: 700, next: 4 }
+                ]
+            },
+            {
+                question: "The Archmage explains that a dragon threatens the western lands. He offers you a magic weapon. What do you choose?",
+                options: [
+                    { text: "The Sword of Valor (+2 Attack)", reward: 900, gold: 200, next: 5 },
+                    { text: "The Shield of Defense (+2 Defense)", reward: 900, gold: 200, next: 5 },
+                    { text: "The Book of Magic (+2 Knowledge)", reward: 900, gold: 200, next: 5 }
+                ]
+            },
+            {
+                question: "You encounter a enemy hero on the road. What's your strategy?",
+                options: [
+                    { text: "Engage in battle immediately!", reward: 1200, gold: 400, next: 5 },
+                    { text: "Retreat and avoid the fight", reward: 300, gold: 900, next: 5 },
+                    { text: "Attempt to negotiate a truce", reward: 600, gold: 600, next: 5 }
+                ]
+            },
+            {
+                question: "The final battle approaches! The dragon's lair is ahead. Do you feel prepared?",
+                options: [
+                    { text: "I'm ready! Bring on the dragon!", reward: 2000, gold: 1000, next: "end_good" },
+                    { text: "I need more time to prepare...", reward: 500, gold: 1500, next: "end_neutral" },
+                    { text: "I fear this is beyond my capabilities", reward: 200, gold: 1800, next: "end_bad" }
+                ]
+            }
+        ];
+
+        let currentLevel = 0;
+        let gold = 500; // Starting gold
+        let totalGold = 500;
+
+        function selectOption(optionIndex) {
+            const currentQuest = gameData[currentLevel];
+            const selectedOption = currentQuest.options[optionIndex];
+
+            // Update gold
+            gold += selectedOption.gold;
+            totalGold = gold;
+            
+            // Update UI
+            document.getElementById('gold').textContent = gold;
+            
+            // Update progress
+            const progress = Math.min((currentLevel + 1) / gameData.length * 100, 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `${currentLevel + 1}/${gameData.length} Quests`;
+
+            // Show response
+            showResponse(selectedOption.text, currentLevel, selectedOption.next);
+        }
+
+        function showResponse(text, level, nextLevel) {
+            const questContainer = document.getElementById('quest-container');
+            const optionsContainer = document.getElementById('options');
+            
+            // Replace options with response text
+            questContainer.innerHTML = `
+                <div class="quest-text">
+                    <strong>Player:</strong> ${text}
+                </div>
+                <div style="text-align: center; margin: 30px 0;">
+                    <div class="ui-panel">
+                        <p>Result: ${getLevelResult(level, text)}</p>
+                        <p style="color: var(--h3-gold); margin-top: 10px;">Gold Earned: ${gameData[level].options.find(opt => opt.text === text).gold}</p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button class="option-btn" onclick="nextLevel(${nextLevel})">Continue Journey</button>
+                </div>
+            `;
+        }
+
+        function getLevelResult(level, answer) {
+            const responses = [
+                "Excellent! The Archmage smiles at your enthusiasm.",
+                "Smart to gather information first. Knowledge is power.",
+                "A wise decision. Better safe than sorry.",
+                "The merchant nods respectfully at your negotiation skills.",
+                "You feel confident as you equip your new weapon.",
+                "The battle is fierce, but your strategy pays off!",
+                "A dangerous move, but it saved you precious resources."
+            ];
+            return responses[level];
+        }
+
+        function nextLevel(next) {
+            if (next === "end_good") {
+                showEnding(true);
+            } else if (next === "end_neutral") {
+                showEnding(false);
+            } else if (next === "end_bad") {
+                showEnding(false, true);
+            } else {
+                currentLevel = next;
+                renderQuest();
+            }
+        }
+
+        function renderQuest() {
+            const questContainer = document.getElementById('quest-container');
+            const currentQuest = gameData[currentLevel];
+            
+            let optionsHTML = '';
+            currentQuest.options.forEach((option, index) => {
+                optionsHTML += `<button class="option-btn" onclick="selectOption(${index})">${option.text}</button>`;
+            });
+
+            questContainer.innerHTML = `
+                <div class="quest-text">
+                    ${currentQuest.question}
+                </div>
+                <div class="options">
+                    ${optionsHTML}
+                </div>
+            `;
+        }
+
+        function showEnding(isGood, isBad = false) {
+            document.getElementById('quest-container').style.display = 'none';
+            document.getElementById('ending').style.display = 'block';
+            
+            const endingText = document.getElementById('ending-text');
+            const endingGold = document.getElementById('ending-gold');
+            
+            if (isGood) {
+                endingText.innerHTML = "<strong>Congratulations!</strong> You have defeated the dragon and saved the kingdom. Your name will be remembered for generations!";
+                endingText.style.color = "#4a8c4d";
+            } else if (isBad) {
+                endingText.innerHTML = "<strong>The journey was difficult...</strong> You managed to escape with your life, but the dragon remains free.";
+                endingText.style.color = "#8a1c1c";
+            } else {
+                endingText.innerHTML = "<strong>Your quest has come to an end.</strong> You've gained experience and wealth, but the dragon's threat remains.";
+                endingText.style.color = "#d4af37";
+            }
+            
+            endingGold.textContent = `Total Gold Collected: ${gold}`;
+        }
+
+        function restartQuest() {
+            currentLevel = 0;
+            gold = 500;
+            totalGold = 500;
+            
+            document.getElementById('gold').textContent = gold;
+            document.getElementById('quest-container').style.display = 'block';
+            document.getElementById('ending').style.display = 'none';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0/3 Quests';
+            
+            renderQuest();
+        }
+
+        // Initialize the game
+        renderQuest();
+    </script>
 </body>
 </html>
