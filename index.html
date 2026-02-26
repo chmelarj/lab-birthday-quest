@@ -180,7 +180,8 @@ input:focus{
 /* -------------------------------------------------------------
    FEEDBACK TEXT
    ------------------------------------------------------------- */
-#feedback-msg{
+#feedback-msg,
+#map-feedback-msg{
     margin-top:15px;
     font-size:22px;
     font-weight:bold;
@@ -190,7 +191,7 @@ input:focus{
 .msg-wrong  {color:var(--h3-red);    text-shadow:1px 1px 0 #fff;}
 
 /* -------------------------------------------------------------
-   END SCREEN (victory + treasure map)
+   END SCREEN (victory)
    ------------------------------------------------------------- */
 .ending{
     text-align:center;
@@ -200,9 +201,21 @@ input:focus{
     margin-top:20px;
 }
 .ending h2{color:var(--h3-gold); font-size:2rem; margin-bottom:15px;}
-.map-image{
-    width:100%;
-    max-width:500px;
+
+/* -------------------------------------------------------------
+   MAP QUESTION (final “question”)
+   ------------------------------------------------------------- */
+.map-question{
+    background:#2a1b0f;
+    border:3px solid var(--h3-gold-dark);
+    border-radius:8px;
+    padding:25px;
+    margin-top:20px;
+    text-align:center;
+}
+.map-question img{
+    width:100%;               /* fills the whole inner width of the container */
+    max-width:100%;
     border:3px solid var(--h3-gold);
     border-radius:5px;
     margin-top:15px;
@@ -216,19 +229,16 @@ input:focus{
 </head>
 
 <body>
-
 <div class="game-container">
 
     <!-- ---------- HEADER ---------- -->
     <header>
         <h1 class="gold-text">The Quest Begins</h1>
-        <p class="subtitle">Heroes of Might & Magic III – Quiz Edition</p>
+        <p class="subtitle">Heroes of Might & Magic III – Birthday Edition</p>
     </header>
 
     <!-- ---------- GOLD COUNTER (flavour) ---------- -->
-    <div class="gold-counter">
-        <span>💰</span><span id="gold">0</span>
-    </div>
+    <div class="gold-counter"><span>💰</span><span id="gold">0</span></div>
 
     <!-- ---------- LANDING PAGE ---------- -->
     <div id="landing-page" class="quest-container">
@@ -246,20 +256,30 @@ input:focus{
         <p id="feedback-msg"></p>
     </div>
 
-    <!-- ---------- END SCREEN (Victory + Map) ---------- -->
+    <!-- ---------- MAP QUESTION (appears after the last answer) ---------- -->
+    <div id="map-question" class="map-question hidden">
+        <h2 class="gold-text">The Treasure Map</h2>
+        <p class="quest-text">The final clue is a map that leads to the hidden gold.</p>
+
+        <!-- map image (fills the container width) -->
+        <img src="background.png" alt="Treasure map">
+
+        <!-- NEW INPUT for the secret code -->
+        <input type="text" id="map-input" placeholder="Values…" autocomplete="off">
+
+        <!-- button to validate the secret code -->
+        <button class="btn btn-check" onclick="checkMapAnswer()">Confirm Treasure</button>
+
+        <!-- feedback for the code -->
+        <p id="map-feedback-msg"></p>
+    </div>
+
+    <!-- ---------- END SCREEN (Victory) ---------- -->
     <div id="end-screen" class="quest-container hidden">
         <div class="ending">
             <h2 class="gold-text">Victory!</h2>
             <p>You have completed the quest.</p>
             <p id="final-gold" style="color:var(--h3-gold);font-size:1.4rem;font-weight:bold;"></p>
-        </div>
-       <div>
-            <!-- *** TREASURE MAP IMAGE *** -->
-            <img src="background.png"
-                 alt="Treasure map"
-                 class="map-image">
-       </div>
-       <div>
             <button class="btn btn-restart" onclick="restartQuiz()">Play Again</button>
         </div>
     </div>
@@ -276,8 +296,8 @@ const questions = [
     { q:"Days in a week?"           , a:"7"          }
 ];
 
-let curIdx = 0;            // which question we are on
-let gold   = 0;            // gold earned during the quiz
+let curIdx = 0;          // current question index
+let gold   = 0;          // accumulated gold
 
 /* ---------------------- UI HELPERS ---------------------- */
 function $(id){ return document.getElementById(id); }
@@ -304,20 +324,20 @@ function loadQuestion(){
     $('user-input').focus();
 }
 
-/* ---------------------- CHECK ANSWER ---------------------- */
+/* ---------------------- CHECK ANSWER (regular questions) ---------------------- */
 function checkAnswer(){
     const answer = $('user-input').value.trim().toLowerCase();
-    if(answer === "") return;   // ignore empty submit
+    if(answer === "") return;                 // ignore empty
 
     const correct = questions[curIdx].a.toLowerCase();
     const feedback = $('feedback-msg');
-    feedback.className = "";    // reset colour class
+    feedback.className = "";                  // reset colour
 
     if(answer === correct){
         feedback.textContent = "Correct!";
         feedback.classList.add('msg-correct');
 
-        gold += 100;                     // reward – you can change the value
+        gold += 100;                          // simple reward
         $('gold').textContent = gold;
 
         setTimeout(()=> {
@@ -325,7 +345,11 @@ function checkAnswer(){
             if(curIdx < questions.length){
                 loadQuestion();
             }else{
-                endQuiz();
+                /* All ordinary questions answered – show the MAP screen */
+                $('quiz-section').classList.add('hidden');
+                $('map-question').classList.remove('hidden');
+                $('map-question').classList.add('visible');
+                $('map-input').focus();
             }
         }, 800);
     }else{
@@ -335,9 +359,27 @@ function checkAnswer(){
     }
 }
 
-/* ---------------------- END QUIZ ---------------------- */
-function endQuiz(){
-    $('quiz-section').classList.add('hidden');
+/* ---------------------- CHECK MAP CODE ---------------------- */
+function checkMapAnswer(){
+    const code = $('map-input').value.trim();
+    const feedback = $('map-feedback-msg');
+    feedback.className = "";                       // reset colours
+
+    if(code === "123456"){
+        feedback.textContent = "Correct code!";
+        feedback.classList.add('msg-correct');
+        // you could give extra gold here if you want, e.g. gold+=200;
+        setTimeout(showVictory, 800);
+    }else{
+        feedback.textContent = "Wrong code. Try again.";
+        feedback.classList.add('msg-wrong');
+        $('map-input').select();
+    }
+}
+
+/* ---------------------- SHOW VICTORY ---------------------- */
+function showVictory(){
+    $('map-question').classList.add('hidden');
     $('end-screen').classList.remove('hidden');
     $('end-screen').classList.add('visible');
     $('final-gold').textContent = `Gold Collected: ${gold}`;
@@ -353,6 +395,9 @@ function restartQuiz(){
 /* ---------------------- ENTER‑KEY SUPPORT ---------------------- */
 $('user-input').addEventListener('keypress',e=>{
     if(e.key === "Enter") checkAnswer();
+});
+$('map-input').addEventListener('keypress',e=>{
+    if(e.key === "Enter") checkMapAnswer();
 });
 </script>
 </body>
