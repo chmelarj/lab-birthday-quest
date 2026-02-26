@@ -1,136 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Quiz</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 100px;
-            background-color: #f0f0f0;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px gray;
-            max-width: 400px;
-            margin: auto;
-        }
-        input {
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            width: 80%;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #message {
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .correct { color: green; }
-        .wrong { color: red; }
-    </style>
+<meta charset="UTF-8">
+<title>Heroes III – Quiz Quest</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* -------------------------------------------------------------
+   BASIC PALETTE (Heroes III look)
+   ------------------------------------------------------------- */
+:root{
+    --h3-gold          : #d4af37;
+    --h3-gold-dark     : #aa8c2c;
+    --h3-green         : #1e592d;
+    --h3-green-light   : #3a8c4d;
+    --h3-blue          : #1a2a4a;
+    --h3-text          : #f0e6d2;
+    --h3-red           : #8a1c1c;
+}
+
+/* -------------------------------------------------------------
+   GLOBAL SETTINGS
+   ------------------------------------------------------------- */
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+    font-family:'Times New Roman',serif;
+    background:#0a0a0a;
+    background-image:
+        radial-gradient(#1a1a1a 1px,transparent 1px),
+        radial-gradient(#1a1a1a 1px,transparent 1px);
+    background-size:20px 20px;
+    background-position:0 0,10px 10px;
+    color:var(--h3-text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+/* -------------------------------------------------------------
+   MAIN GAME CONTAINER (parchment + double‑gold border)
+   ------------------------------------------------------------- */
+.game-container{
+    width:100%;
+    max-width:800px;
+    background:linear-gradient(135deg,#2c1e10 0%,#1a120a 100%);
+    border:8px double var(--h3-gold);
+    border-radius:10px;
+    padding:30px;
+    box-shadow:
+        0 0 20px rgba(212,175,55,.3),
+        inset 0 0 30px rgba(0,0,0,.8);
+    position:relative;
+}
+.game-container::before{
+    content:'';
+    position:absolute;
+    inset:-12px;
+    border:4px solid var(--h3-green);
+    border-radius:15px;
+    z-index:-1;
+}
+
+/* -------------------------------------------------------------
+   HEADER / TITLE
+   ------------------------------------------------------------- */
+header{
+    text-align:center;
+    margin-bottom:30px;
+    border-bottom:3px solid var(--h3-gold);
+    padding-bottom:20px;
+}
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:3rem;
+    color:var(--h3-gold);
+    text-shadow:
+        2px 2px 4px rgba(0,0,0,.8),
+        3px 3px 0 var(--h3-gold-dark);
+    letter-spacing:2px;
+}
+.subtitle{
+    font-size:1.2rem;
+    color:var(--h3-gold);
+    margin-top:5px;
+}
+
+/* -------------------------------------------------------------
+   GOLD COUNTER (flavour only)
+   ------------------------------------------------------------- */
+.gold-counter{
+    position:absolute;
+    top:15px; right:20px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:1.3rem;
+    color:var(--h3-gold);
+}
+
+/* -------------------------------------------------------------
+   QUEST WINDOW (parchment‑style box)
+   ------------------------------------------------------------- */
+.quest-container{
+    background:#2a1b0f;
+    border:3px solid var(--h3-gold-dark);
+    padding:25px;
+    border-radius:8px;
+    min-height:260px;
+}
+.quest-text{
+    font-size:1.2rem;
+    line-height:1.8;
+    margin-bottom:20px;
+    font-weight:bold;
+}
+input{
+    width:100%;
+    padding:12px;
+    font-size:20px;
+    font-family:'Times New Roman',serif;
+    text-align:center;
+    border:3px solid #5c4033;
+    border-top-color:#fff;
+    border-left-color:#fff;
+    border-right-color:#5c4033;
+    border-bottom-color:#5c4033;
+    box-shadow:2px 2px 4px rgba(0,0,0,.3);
+    background:#fff;
+}
+input:focus{
+    outline:none;
+    box-shadow:0 0 0 3px rgba(44,90,160,.3), inset 2px 2px 4px rgba(0,0,0,.2);
+}
+
+/* -------------------------------------------------------------
+   HEROES‑III‑LIKE BUTTONS
+   ------------------------------------------------------------- */
+.btn{
+    display:block;
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    font-size:18px;
+    font-weight:bold;
+    text-transform:uppercase;
+    cursor:pointer;
+    background:#e0e0e0;
+    border-top:3px solid #fff;
+    border-left:3px solid #fff;
+    border-right:3px solid #5c4033;
+    border-bottom:3px solid #5c4033;
+    color:#000;
+    box-shadow:3px 3px 5px rgba(0,0,0,.4);
+    transition:.1s;
+}
+.btn:hover{
+    background:#f0f0f0;
+    transform:translate(-1px,-1px);
+}
+.btn:active{
+    border-top:3px solid #5c4033;
+    border-left:3px solid #5c4033;
+    border-right:3px solid #fff;
+    border-bottom:3px solid #fff;
+    box-shadow:inset 2px 2px 5px rgba(0,0,0,.5);
+    transform:translate(2px,2px);
+}
+
+/* colour variants */
+.btn-start   {background:#6ab04b; color:#fff; border-top-color:#9be679; border-left-color:#9be679; border-right-color:#2e5c1f; border-bottom-color:#2e5c1f;}
+.btn-start:hover   {background:#7bc05b;}
+.btn-check   {background:#e74c3c; color:#fff; border-top-color:#ec7063; border-left-color:#ec7063; border-right-color:#7c261d; border-bottom-color:#7c261d;}
+.btn-check:hover   {background:#f05d4e;}
+.btn-restart {background:#3498db; color:#fff; border-top-color:#5dade2; border-left-color:#5dade2; border-right-color:#1f6391; border-bottom-color:#1f6391;}
+.btn-restart:hover {background:#5dade2;}
+
+/* -------------------------------------------------------------
+   FEEDBACK TEXT
+   ------------------------------------------------------------- */
+#feedback-msg{
+    margin-top:15px;
+    font-size:22px;
+    font-weight:bold;
+    min-height:30px;
+}
+.msg-correct{color:var(--h3-green);  text-shadow:1px 1px 0 #fff;}
+.msg-wrong  {color:var(--h3-red);    text-shadow:1px 1px 0 #fff;}
+
+/* -------------------------------------------------------------
+   END SCREEN (victory + treasure map)
+   ------------------------------------------------------------- */
+.ending{
+    text-align:center;
+    padding:20px;
+    border:2px dashed var(--h3-gold);
+    border-radius:8px;
+    margin-top:20px;
+}
+.ending h2{color:var(--h3-gold); font-size:2rem; margin-bottom:15px;}
+.map-image{
+    width:100%;
+    max-width:500px;
+    border:3px solid var(--h3-gold);
+    border-radius:5px;
+    margin-top:15px;
+}
+
+/* hide / show helpers */
+.hidden{display:none !important;}
+.visible{animation:fadeIn .5s ease;}
+@keyframes fadeIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+</style>
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>Quick Quiz</h1>
-        
-        <h2 id="question-text">Question 1</h2>
-        <input type="text" id="answer-box" placeholder="Type your answer here">
-        <br>
-        <button onclick="checkAnswer()">Submit Answer</button>
-        
-        <p id="message"></p>
-        <p id="progress">Question 1 of 5</p>
+<div class="game-container">
+
+    <!-- ---------- HEADER ---------- -->
+    <header>
+        <h1 class="gold-text">The Quest Begins</h1>
+        <p class="subtitle">Heroes of Might & Magic III – Quiz Edition</p>
+    </header>
+
+    <!-- ---------- GOLD COUNTER (flavour) ---------- -->
+    <div class="gold-counter">
+        <span>💰</span><span id="gold">0</span>
     </div>
 
-    <div class="container" id="end-screen" style="display: none;">
-        <h1>🎉 Congratulations! 🎉</h1>
-        <p>You have answered all 5 questions correctly.</p>
-        <button onclick="location.reload()">Restart</button>
+    <!-- ---------- LANDING PAGE ---------- -->
+    <div id="landing-page" class="quest-container">
+        <div class="quest-text">
+            Welcome, adventurer! Test your knowledge across five simple riddles.
+        </div>
+        <button class="btn btn-start" onclick="startQuiz()">Start Quest</button>
     </div>
 
-    <script>
-        // 1. Define the 5 questions and answers
-        const questions = [
-            { question: "What is 2 + 2?", answer: "4" },
-            { question: "What is the capital of France?", answer: "Paris" },
-            { question: "What color is the sky (on a clear day)?", answer: "Blue" },
-            { question: "What is the opposite of Cold?", answer: "Hot" },
-            { question: "How many legs does a spider have?", answer: "8" }
-        ];
+    <!-- ---------- QUIZ SECTION ---------- -->
+    <div id="quiz-section" class="quest-container hidden">
+        <div class="quest-text" id="q-text">Loading…</div>
+        <input type="text" id="user-input" placeholder="Your answer…" autocomplete="off">
+        <button class="btn btn-check" onclick="checkAnswer()">Confirm</button>
+        <p id="feedback-msg"></p>
+    </div>
 
-        let currentQuestionIndex = 0;
+    <!-- ---------- END SCREEN (Victory + Map) ---------- -->
+    <div id="end-screen" class="quest-container hidden">
+        <div class="ending">
+            <h2 class="gold-text">Victory!</h2>
+            <p>You have completed the quest.</p>
+            <p id="final-gold" style="color:var(--h3-gold);font-size:1.4rem;font-weight:bold;"></p>
 
-        // 2. Main Logic Function
-        function checkAnswer() {
-            const inputBox = document.getElementById("answer-box");
-            const messageBox = document.getElementById("message");
-            const progressBox = document.getElementById("progress");
-            const userAnswer = inputBox.value.trim().toLowerCase(); // Remove spaces and lowercase
-            const correctAnswer = questions[currentQuestionIndex].answer.toLowerCase();
+            <!-- *** TREASURE MAP IMAGE *** -->
+            <img src="background.png"          <!-- replace with any map you like -->
+                 alt="Treasure map"
+                 class="map-image">
 
-            // Check if the box is empty
-            if (userAnswer === "") {
-                messageBox.innerText = "Please type an answer.";
-                messageBox.className = "wrong";
-                return;
+            <button class="btn btn-restart" onclick="restartQuiz()">Play Again</button>
+        </div>
+    </div>
+
+</div>   <!-- end .game-container -->
+
+<script>
+/* ---------------------- QUIZ DATA ---------------------- */
+const questions = [
+    { q:"What is 2 + 2?"            , a:"4"          },
+    { q:"Capital of France?"        , a:"Paris"      },
+    { q:"Color of the clear sky?"   , a:"Blue"       },
+    { q:"Opposite of Hot?"          , a:"Cold"       },
+    { q:"Days in a week?"           , a:"7"          }
+];
+
+let curIdx = 0;            // which question we are on
+let gold   = 0;            // gold earned during the quiz
+
+/* ---------------------- UI HELPERS ---------------------- */
+function $(id){ return document.getElementById(id); }
+
+/* ---------------------- START QUIZ ---------------------- */
+function startQuiz(){
+    gold = 0;
+    curIdx = 0;
+    $('gold').textContent = gold;
+
+    $('landing-page').classList.add('hidden');
+    $('quiz-section').classList.remove('hidden');
+    $('quiz-section').classList.add('visible');
+
+    loadQuestion();
+}
+
+/* ---------------------- LOAD QUESTION ---------------------- */
+function loadQuestion(){
+    const q = questions[curIdx];
+    $('q-text').innerText = q.q;
+    $('user-input').value = "";
+    $('feedback-msg').textContent = "";
+    $('user-input').focus();
+}
+
+/* ---------------------- CHECK ANSWER ---------------------- */
+function checkAnswer(){
+    const answer = $('user-input').value.trim().toLowerCase();
+    if(answer === "") return;   // ignore empty submit
+
+    const correct = questions[curIdx].a.toLowerCase();
+    const feedback = $('feedback-msg');
+    feedback.className = "";    // reset colour class
+
+    if(answer === correct){
+        feedback.textContent = "Correct!";
+        feedback.classList.add('msg-correct');
+
+        gold += 100;                     // reward – you can change the value
+        $('gold').textContent = gold;
+
+        setTimeout(()=> {
+            curIdx++;
+            if(curIdx < questions.length){
+                loadQuestion();
+            }else{
+                endQuiz();
             }
+        }, 800);
+    }else{
+        feedback.textContent = "Incorrect – try again.";
+        feedback.classList.add('msg-wrong');
+        $('user-input').select();
+    }
+}
 
-            if (userAnswer === correctAnswer) {
-                // CORRECT ANSWER
-                messageBox.innerText = "Correct! Moving on...";
-                messageBox.className = "correct";
-                
-                // Wait 1 second (1000ms) then go to next question
-                setTimeout(() => {
-                    currentQuestionIndex++;
-                    
-                    if (currentQuestionIndex < questions.length) {
-                        // Load next question
-                        document.getElementById("question-text").innerText = questions[currentQuestionIndex].question;
-                        inputBox.value = ""; // Clear input
-                        messageBox.innerText = ""; // Clear message
-                        progressBox.innerText = `Question ${currentQuestionIndex + 1} of 5`;
-                        inputBox.focus(); // Put cursor back in box
-                    } else {
-                        // Show Final Screen
-                        document.querySelector(".container").style.display = "none";
-                        document.getElementById("end-screen").style.display = "block";
-                    }
-                }, 1000); // 1 second delay
+/* ---------------------- END QUIZ ---------------------- */
+function endQuiz(){
+    $('quiz-section').classList.add('hidden');
+    $('end-screen').classList.remove('hidden');
+    $('end-screen').classList.add('visible');
+    $('final-gold').textContent = `Gold Collected: ${gold}`;
+}
 
-            } else {
-                // WRONG ANSWER
-                messageBox.innerText = "Try Again!";
-                messageBox.className = "wrong";
-                inputBox.select(); // Highlight text so user can type over it
-            }
-        }
+/* ---------------------- RESTART ---------------------- */
+function restartQuiz(){
+    $('end-screen').classList.add('hidden');
+    $('landing-page').classList.remove('hidden');
+    $('landing-page').classList.add('visible');
+}
 
-        // 3. Allow pressing "Enter" key to submit
-        document.getElementById("answer-box").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkAnswer();
-            }
-        });
-    </script>
-
+/* ---------------------- ENTER‑KEY SUPPORT ---------------------- */
+$('user-input').addEventListener('keypress',e=>{
+    if(e.key === "Enter") checkAnswer();
+});
+</script>
 </body>
 </html>
