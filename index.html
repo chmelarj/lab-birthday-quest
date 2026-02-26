@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+            max-width: 400px;
+            margin: auto;
+        }
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            width: 80%;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .correct { color: green; }
+        .wrong { color: red; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Quick Quiz</h1>
+        
+        <h2 id="question-text">Question 1</h2>
+        <input type="text" id="answer-box" placeholder="Type your answer here">
+        <br>
+        <button onclick="checkAnswer()">Submit Answer</button>
+        
+        <p id="message"></p>
+        <p id="progress">Question 1 of 5</p>
+    </div>
+
+    <div class="container" id="end-screen" style="display: none;">
+        <h1>🎉 Congratulations! 🎉</h1>
+        <p>You have answered all 5 questions correctly.</p>
+        <button onclick="location.reload()">Restart</button>
+    </div>
+
+    <script>
+        // 1. Define the 5 questions and answers
+        const questions = [
+            { question: "What is 2 + 2?", answer: "4" },
+            { question: "What is the capital of France?", answer: "Paris" },
+            { question: "What color is the sky (on a clear day)?", answer: "Blue" },
+            { question: "What is the opposite of Cold?", answer: "Hot" },
+            { question: "How many legs does a spider have?", answer: "8" }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        // 2. Main Logic Function
+        function checkAnswer() {
+            const inputBox = document.getElementById("answer-box");
+            const messageBox = document.getElementById("message");
+            const progressBox = document.getElementById("progress");
+            const userAnswer = inputBox.value.trim().toLowerCase(); // Remove spaces and lowercase
+            const correctAnswer = questions[currentQuestionIndex].answer.toLowerCase();
+
+            // Check if the box is empty
+            if (userAnswer === "") {
+                messageBox.innerText = "Please type an answer.";
+                messageBox.className = "wrong";
+                return;
+            }
+
+            if (userAnswer === correctAnswer) {
+                // CORRECT ANSWER
+                messageBox.innerText = "Correct! Moving on...";
+                messageBox.className = "correct";
+                
+                // Wait 1 second (1000ms) then go to next question
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    
+                    if (currentQuestionIndex < questions.length) {
+                        // Load next question
+                        document.getElementById("question-text").innerText = questions[currentQuestionIndex].question;
+                        inputBox.value = ""; // Clear input
+                        messageBox.innerText = ""; // Clear message
+                        progressBox.innerText = `Question ${currentQuestionIndex + 1} of 5`;
+                        inputBox.focus(); // Put cursor back in box
+                    } else {
+                        // Show Final Screen
+                        document.querySelector(".container").style.display = "none";
+                        document.getElementById("end-screen").style.display = "block";
+                    }
+                }, 1000); // 1 second delay
+
+            } else {
+                // WRONG ANSWER
+                messageBox.innerText = "Try Again!";
+                messageBox.className = "wrong";
+                inputBox.select(); // Highlight text so user can type over it
+            }
+        }
+
+        // 3. Allow pressing "Enter" key to submit
+        document.getElementById("answer-box").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        });
+    </script>
+
+</body>
+</html>
