@@ -244,7 +244,10 @@ input:focus{
     <!-- ---------- LANDING PAGE ---------- -->
     <div id="landing-page" class="quest-container">
         <div class="quest-text">
-            Vítej dobrodružná Peťo! Naše alchymistická dílna potřebuje Tvoji pomoc. Jsme rádi, že se dobrovolně hlásíš do tohoto dobrodružného tažení! Neotálejme, mám pro tebe první úkol!
+            Vítej dobrodružná Peťo!
+           Naše alchymistická dílna potřebuje Tvoji pomoc. 
+           Jsme rádi, že se dobrovolně hlásíš do tohoto dobrodružného tažení!
+           Neotálejme, mám pro tebe první úkol!
         </div>
         <button class="btn btn-start" onclick="startQuiz()">Start Quest</button>
     </div>
@@ -283,7 +286,7 @@ input:focus{
             <p>Dokončila jsi quest, odměnou ti bude překvapení, které nalezneš těchto souřadnících:
                49.1779417N, 16.5719419E
             </p>
-            <p id="final-gold" style="color:var(--h3-gold);font-size:1.4rem;font-weight:bold;"></p>
+            <!--<p id="final-gold" style="color:var(--h3-gold);font-size:1.4rem;font-weight:bold;"></p>*/ -->
             <button class="btn btn-restart" onclick="restartQuiz()">Play Again</button>
         </div>
     </div>
@@ -293,9 +296,9 @@ input:focus{
 <script>
 /* ---------------------- QUIZ DATA ---------------------- */
 const questions = [
-    { q:"Troglodyti ze západních datových úvalů nemají rádi světlo. Zařiď prosím ať mají přítmí. Pokud při tomto dobrodružství narazíš na něco zajímavého, určitě nám dej vědět, co to je"            , a:"Všechno nejlepší!" /*tzn nápis na žaluziích*/          },
-    { q:"Jak jistě víš, v naší alchymistické dílně pobývá také mág, jehož znalosti jsou bezbřehé a měla jsi čest naučit se některým jeho kouzlům. Spočítej nám prosím, kolik k němu vede schodů"        , a:"47"      },
-    { q:"V místnosti na plánování válečných tažení je pro tebe uschována šifra, vyřeš ji prosím"   , a:"2*(7+7-2)"       },
+    { q:"Troglodyti ze západních datových úvalů nemají rádi světlo. Zařiď prosím ať mají přítmí. Pokud při tomto dobrodružství narazíš na něco zajímavého, určitě nám dej vědět, co to je."            , a:"Všechno nejlepší!" /*tzn nápis na žaluziích*/          },
+    { q:"Jak jistě víš, v naší alchymistické dílně pobývá také mág, jehož znalosti jsou bezbřehé a měla jsi čest naučit se některým jeho kouzlům. Spočítej nám prosím, kolik k němu vede schodů."        , a:"47"      },
+    { q:"V místnosti na plánování válečných tažení je pro tebe uschována šifra, vyřeš ji prosím."   , a:"2*(7+7-2)"       },
     { q:"Náš vojevůdce má ve svém útočišti artefakt, jakousi futuristickou věc, nejspíše zobrazující dopravní prostředek budoucnosti, který mu zlepšuje jeho logistické schopnosti. Řekni nám barvu tohoto artefaktu."          , a:"červená"       },
     { q:"V přípravně jídel a nápojů jsou velmi hlučné futuristické přístroje. Prohlédni je od nejtiššího po nejhlučnější a vyřeš šifru."           , a:"LAB"          }
     /*{ q:"Klíč k dalšímu úkolu se nachází na vyznačeném místě na mapce"           , a:"tbd"          } */
